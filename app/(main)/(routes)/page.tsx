@@ -1,3 +1,4 @@
+import { ModeToggle } from "@/components/mode-toogle";
 import { UserButton } from "@clerk/nextjs";
 
 const Home = () => {
@@ -5,6 +6,7 @@ const Home = () => {
         <div>
             This is a protected route
             <UserButton afterSignOutUrl="/" />
+            <ModeToggle />
         </div>
     );
 };
