@@ -1,5 +1,11 @@
 "use client";
 
+import axios from "axios";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+
 import {
     Dialog,
     DialogContent,
@@ -8,9 +14,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Form,
     FormControl,
@@ -21,20 +24,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import FileUpload from "../file-upload";
 
 const formSchema = z.object({
     name: z.string().min(1, {
-        message: "Server name is required",
+        message: "Server name is required.",
     }),
     imageUrl: z.string().min(1, {
-        message: "Server image is  required",
+        message: "Server image is required.",
     }),
 });
 
 const InitialModal = () => {
     const [isMounted, setIsMounted] = useState(false);
+
+    const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
@@ -50,8 +55,16 @@ const InitialModal = () => {
 
     const isLoading = form.formState.isSubmitting;
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const onCreateServerSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            await axios.post("/api/servers", values);
+
+            form.reset();
+            router.refresh();
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     if (!isMounted) {
@@ -72,7 +85,7 @@ const InitialModal = () => {
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={form.handleSubmit(onCreateServerSubmit)}
                         className="space-y-8"
                     >
                         <div className="space-y-8 px-6">

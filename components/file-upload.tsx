@@ -28,8 +28,6 @@ const FileUpload = ({ onChange, value, endpoint }: FileUploadProps) => {
         );
     }
 
-    console.log(value, "aaa");
-
     return (
         <UploadDropzone
             endpoint={endpoint}
